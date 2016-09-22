@@ -1318,7 +1318,7 @@ class NICard(Base, SlowCounterInterface, ConfocalScannerInterface, ODMRCounterIn
             daq.DAQmx_Val_DoNotOverwriteUnreadSamps)
         return 0
 
-    def scan_line(self, line_path=None):
+    def scan_line(self, line_path=None, imaging=False):
         """ Scans a line and return the counts on that line.
 
         @param float[][4] line_path: array of 4-part tuples defining the
@@ -1357,6 +1357,12 @@ class NICard(Base, SlowCounterInterface, ConfocalScannerInterface, ODMRCounterIn
 
         daq.DAQmxStopTask(self._scanner_counter_daq_task)
         daq.DAQmxStopTask(self._scanner_clock_daq_task)
+
+        if imaging:
+            daq.DAQmxConnectTerms(
+                self._scanner_clock_channel+'InternalOutput',
+                self._odmr_trigger_channel,
+                daq.DAQmx_Val_DoNotInvertPolarity)
 
         # start the scanner counting task that acquires counts synchroneously
         daq.DAQmxStartTask(self._scanner_counter_daq_task)
@@ -1405,6 +1411,11 @@ class NICard(Base, SlowCounterInterface, ConfocalScannerInterface, ODMRCounterIn
 
         # stop the analoque output taks
         daq.DAQmxStopTask(self._scanner_ao_task)
+
+        if imaging:
+            daq.DAQmxDisconnectTerms(
+                self._scanner_clock_channel+'InternalOutput',
+                self._odmr_trigger_channel)
 
         # set task timing to on demand, i.e. when demanded by software
         daq.DAQmxSetSampTimingType(

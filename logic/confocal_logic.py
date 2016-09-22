@@ -708,7 +708,7 @@ class ConfocalLogic(GenericLogic):
                               image[self._scan_counter, :, 2],
                               image[self._scan_counter, :, 3]))
             # scan of a single line
-            line_counts = self._scanning_device.scan_line(line)
+            line_counts = self._scanning_device.scan_line(line, True)
             # defines trace of positions for a single return line scan
             if self.depth_scan_dir_is_xz:
                 return_line = np.vstack((
