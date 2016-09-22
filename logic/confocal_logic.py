@@ -481,12 +481,20 @@ class ConfocalLogic(GenericLogic):
                 return -1
 
             # prevents distorion of the image
-            if (x2 - x1) >= (y2 - y1):
-                self._X = np.linspace(x1, x2, self.xy_resolution)
-                self._Y = np.linspace(y1, y2, int(self.xy_resolution*(y2-y1)/(x2-x1)))
-            else:
-                self._Y = np.linspace(y1, y2, self.xy_resolution)
-                self._X = np.linspace(x1, x2, int(self.xy_resolution*(x2-x1)/(y2-y1)))
+            #if (x2 - x1) >= (y2 - y1):
+            #    self._X = np.linspace(x1, x2, self.xy_resolution)
+            #    self._Y = np.linspace(y1, y2, int(self.xy_resolution*(y2-y1)/(x2-x1)))
+            #else:
+            #    self._Y = np.linspace(y1, y2, self.xy_resolution)
+            #    self._X = np.linspace(x1, x2, int(self.xy_resolution*(x2-x1)/(y2-y1)))
+
+        self._X = np.linspace(x1, x2, 3*self.xy_resolution)
+        for i in range(len(self._X)):
+            if i % 3 == 0:
+                self._X[i+1] = self._X[i]
+                self._X[i+2] = self._X[i]
+
+        self._Y = np.linspace(y1, y2, self.xy_resolution)
 
         self._XL = self._X
         self._YL = self._Y
@@ -525,6 +533,7 @@ class ConfocalLogic(GenericLogic):
             y_value_matrix = np.full((len(self._X), len(self._image_vert_axis)), self._Y)
             self.xy_image[:, :, 1] = y_value_matrix.transpose()
             self.xy_image[:, :, 2] = self._current_z * np.ones((len(self._image_vert_axis), len(self._X)))
+            self.xy_image[:, :, 3] = 100 * np.ones((len(self._image_vert_axis), len(self._X)))
             self.sigImageXYInitialized.emit()
         return 0
 

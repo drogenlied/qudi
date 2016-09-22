@@ -329,7 +329,6 @@ class ConfocalScannerDummy(Base, ConfocalScannerInterface):
         #    return -1
         #
         #self.lock()
-
         if not isinstance(line_path, (frozenset, list, set, tuple, np.ndarray, )):
             self.log.error('Given voltage list is no array type.')
             return np.array([-1.])
@@ -337,7 +336,7 @@ class ConfocalScannerDummy(Base, ConfocalScannerInterface):
         if np.shape(line_path)[1] != self._line_length:
             self.set_up_line(np.shape(line_path)[1])
 
-        #print('line',line_path[0,:])
+        #print('line', line_path)
         count_data = np.random.uniform(0, 2e4, self._line_length)
         z_data = line_path[2, :]
 
@@ -356,10 +355,11 @@ class ConfocalScannerDummy(Base, ConfocalScannerInterface):
                               *(self._points[i])) * ((self.gaussian_function(z_data,
                               *(self._points_z[i]))))
 
-
         time.sleep(self._line_length*1./self._clock_frequency)
         time.sleep(self._line_length*1./self._clock_frequency)
 
+        #for i in range(len(count_data)):
+        #    count_data[i] += (i%3)*2e4
 #        self.log.warning('ConfocalScannerInterfaceDummy>scan_line: length {0:d}.'.format(self._line_length))
 
         #self.unlock()
