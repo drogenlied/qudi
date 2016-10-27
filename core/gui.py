@@ -18,11 +18,10 @@ along with Qudi. If not, see <http://www.gnu.org/licenses/>.
 Copyright (c) the Qudi Developers. See the COPYRIGHT.txt file at the
 top-level directory of this distribution and at <https://github.com/Ulm-IQO/qudi/>
 """
-
-from qtpy.QtCore import QObject
+import qtpy
+from qtpy.QtCore import QObject, QSize
 from qtpy.QtWidgets import QApplication
 from qtpy.QtGui import QIcon
-from qtpy.QtCore import QSize
 
 
 class Gui(QObject):
@@ -55,7 +54,13 @@ class Gui(QObject):
         QIcon.setThemeName('qudiTheme')
 
     def setStyleSheet(self, stylesheet):
-        QApplication.instance().setStyleSheet(stylesheet)
+        if stylesheet == 'qdark':
+            import qdarkstyle
+            use_pyside = qtpy.PYSIDE
+            QApplication.instance().setStyleSheet(
+                qdarkstyle.load_stylesheet(use_pyside))
+        else:
+            QApplication.instance().setStyleSheet(stylesheet)
 
     def closeWindows(self):
         QApplication.instance().closeAllWindows()

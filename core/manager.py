@@ -326,8 +326,7 @@ class Manager(QtCore.QObject):
                 elif key == 'global' and cfg['global'] is not None:
                     for m in cfg['global']:
                         if m == 'startup':
-                            self.tree['global']['startup'] = cfg[
-                                'global']['startup']
+                            self.tree['global']['startup'] = cfg['global']['startup']
                         elif m == 'stylesheet' and self.hasGui:
                             self.tree['global']['stylesheet'] = cfg['global']['stylesheet']
                             stylesheetpath = os.path.join(
@@ -336,6 +335,9 @@ class Manager(QtCore.QObject):
                                 'styles',
                                 'application',
                                 cfg['global']['stylesheet'])
+                            if self.tree['global']['stylesheet'] in ('qdark.qss', 'qdark'):
+                                self.gui.setStyleSheet('qdark')
+                                continue
                             if not os.path.isfile(stylesheetpath):
                                 logger.warning(
                                     'Stylesheet not found at {0}'.format(stylesheetpath))
